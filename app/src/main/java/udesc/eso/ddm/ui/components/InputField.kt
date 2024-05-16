@@ -8,6 +8,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -16,23 +17,19 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 
 @Composable
-fun TextInputField(fieldLabel: String) {
-    var text = remember { mutableStateOf<String>("") }
+fun TextInputField(fieldLabel: String, inputText: String, onInputTextChange: (String) -> Unit) {
     OutlinedTextField(
-        value = text.value,
-        onValueChange = { text.value = it },
+        value = inputText,
+        onValueChange = onInputTextChange,
         label = { Text(fieldLabel) })
 }
 
 @Composable
-fun PasswordInputField() {
-    var password = rememberSaveable {
-        mutableStateOf("")
-    }
+fun PasswordInputField(passwordText: String, onPasswordTextChange: (String) -> Unit) {
 
     OutlinedTextField(
-        value = password.value,
-        onValueChange = { password.value = it },
+        value = passwordText,
+        onValueChange = onPasswordTextChange,
         label = { Text("senha") },
         visualTransformation = PasswordVisualTransformation(),
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),

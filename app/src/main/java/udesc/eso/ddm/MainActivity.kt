@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -25,18 +26,13 @@ import udesc.eso.ddm.ui.components.SecondaryButton
 import udesc.eso.ddm.ui.theme.Green40
 import udesc.eso.ddm.ui.theme.Orange30
 import udesc.eso.ddm.ui.theme.ZistDictionaryTheme
-
+@ExperimentalMaterial3Api
 class MainActivity() : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-
-        val auth = Firebase.auth
-
         super.onCreate(savedInstanceState)
-
         setContent {
             ZistDictionaryTheme {
                 AppNavigatorController()
-
             }
         }
     }
