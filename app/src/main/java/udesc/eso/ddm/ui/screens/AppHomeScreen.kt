@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -16,8 +15,6 @@ import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -27,34 +24,28 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.asLiveData
 import androidx.navigation.NavController
-import compose.icons.FeatherIcons
-import compose.icons.feathericons.Bookmark
-import compose.icons.feathericons.Home
 import udesc.eso.ddm.navigation.Routes
-import udesc.eso.ddm.ui.components.CreateNewCard
+import udesc.eso.ddm.ui.components.CreateDictionaryModal
+import udesc.eso.ddm.ui.components.CreateNewDictionaryButton
 import udesc.eso.ddm.ui.components.ImageText
 import udesc.eso.ddm.ui.components.NavBar
 import udesc.eso.ddm.ui.components.NavigationCard
+import udesc.eso.ddm.ui.screens.states.UserUiState
 import udesc.eso.ddm.ui.theme.Black
 import udesc.eso.ddm.ui.theme.Grey10
+import udesc.eso.ddm.viewmodel.DictionaryViewModel
 
 @ExperimentalMaterial3Api
 @Composable
-fun AppHomeScreen(navController: NavController) {
-    val username = "Usuário"
-    val dictionaryList = listOf(
-        "English",
-        "German",
-        "Portuguese",
-        "Italian",
-        "Spanish",
-        "Greek",
-        "Chinese",
-        "Japanese"
-    )
-
-    val topicList = listOf("Dicionários", "Flash Cards", "Coleções")
+fun AppHomeScreen(
+    uiState: UserUiState,
+    navController: NavController,
+    dictionaryViewModel: DictionaryViewModel
+) {
+    val dictionaryList = dictionaryViewModel.dictionaries
+    val list = dictionaryList.asLiveData()
     Scaffold(
         topBar = {
             TopAppBar(title = {
@@ -66,7 +57,7 @@ fun AppHomeScreen(navController: NavController) {
                     verticalAlignment = Alignment.Bottom
                 ) {
                     ImageText()
-                    Text("Olá $username", fontSize = 14.sp)
+                    Text("Olá ${uiState.username}", fontSize = 14.sp)
                 }
             }
             )
@@ -83,18 +74,29 @@ fun AppHomeScreen(navController: NavController) {
             }
         },
         content = { it ->
-            LazyColumn(
+            Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(vertical = 24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                items(topicList.size) {
-                    SectionRow(
-                        title = topicList[it],
-                        itemTitleList = dictionaryList,
-                        navController = navController
+                SectionRow(
+                    title = "Dicionários",
+                    itemTitleList = list.value?.map {
+                        "${it.fromLanguage} - ${it.toLanguage}"
+                    },
+                    navController = navController,
+                    onCreateNewDictionaryClick = {
+                        dictionaryViewModel.showCreateDictionaryModal()
+                    }
+                )
+                if (dictionaryViewModel.showCreateDictionaryModal.value) {
+                    CreateDictionaryModal(
+                        viewModel = dictionaryViewModel,
+                        onDismiss = {
+                            dictionaryViewModel.hideCreateDictionaryModal() // Fecha o modal
+                        },
                     )
                 }
             }
@@ -105,7 +107,12 @@ fun AppHomeScreen(navController: NavController) {
 }
 
 @Composable
-fun SectionRow(title: String, itemTitleList: List<String>, navController: NavController) {
+fun SectionRow(
+    title: String,
+    itemTitleList: List<String>?,
+    navController: NavController,
+    onCreateNewDictionaryClick: () -> Unit
+) {
     Column(
         verticalArrangement = Arrangement.spacedBy(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -136,17 +143,18 @@ fun SectionRow(title: String, itemTitleList: List<String>, navController: NavCon
             userScrollEnabled = true,
         ) {
             item {
-                CreateNewCard(
-                    navigationRoute = Routes.CREATE_NEW_DICTIONARY,
-                    navController = navController
+                CreateNewDictionaryButton(
+                    onClick = onCreateNewDictionaryClick
                 )
             }
-            items(itemTitleList.size) {
-                NavigationCard(
-                    title = itemTitleList[it],
-                    navigationRoute = "${Routes.DICTIONARY_SCREEN}/${itemTitleList[it]}",
-                    navController = navController
-                )
+            if (itemTitleList != null) {
+                items(itemTitleList.size) {
+                    NavigationCard(
+                        title = itemTitleList[it],
+                        navigationRoute = "${Routes.DICTIONARY_SCREEN}/${itemTitleList[it]}",
+                        navController = navController
+                    )
+                }
             }
         }
     }

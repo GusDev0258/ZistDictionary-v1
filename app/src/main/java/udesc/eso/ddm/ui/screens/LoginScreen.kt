@@ -18,15 +18,10 @@ import udesc.eso.ddm.ui.components.PasswordInputField
 import udesc.eso.ddm.ui.components.PrimaryButton
 import udesc.eso.ddm.ui.components.SecondaryButton
 import udesc.eso.ddm.ui.components.TextInputField
+import udesc.eso.ddm.ui.screens.states.LoginUiState
 
 @Composable
-fun LoginScreen(navController: NavController) {
-    var email = remember {
-        mutableStateOf("")
-    }
-    var password = rememberSaveable {
-        mutableStateOf("")
-    }
+fun LoginScreen(uiState: LoginUiState, onSignInClick: () -> Unit) {
     Column(
         verticalArrangement = Arrangement.SpaceEvenly,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -38,16 +33,19 @@ fun LoginScreen(navController: NavController) {
             ImageLogo()
         }
         Column {
-            TextInputField(fieldLabel = "e-mail", inputText = email.value, onInputTextChange = {})
-            PasswordInputField(password.value, onPasswordTextChange = {})
+            TextInputField(
+                fieldLabel = "e-mail",
+                inputText = uiState.email,
+                onInputTextChange = uiState.onEmailChange
+            )
+            PasswordInputField(uiState.password, onPasswordTextChange = uiState.onPasswordChange)
         }
         Column {
             PrimaryButton(
                 buttonText = "ENTRAR",
-                handleClick = { navController.navigate("ZIST_HOME") })
-            SecondaryButton(
-                buttonText = "CRIAR CONTA",
-                handleClick = { navController.navigate("REGISTER") })
+                handleClick =
+                onSignInClick
+            )
         }
     }
 }

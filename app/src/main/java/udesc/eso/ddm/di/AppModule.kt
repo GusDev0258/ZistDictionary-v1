@@ -1,6 +1,5 @@
 package udesc.eso.ddm.di
 
-import androidx.navigation.compose.rememberNavController
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -14,17 +13,37 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 import udesc.eso.ddm.infra.http.TranslationHttpDAO
 import udesc.eso.ddm.infra.repository.AuthRepository
+import udesc.eso.ddm.infra.repository.DictionaryRepository
+import udesc.eso.ddm.infra.repository.UserRepository
+import udesc.eso.ddm.infra.repository.WordRepository
 import udesc.eso.ddm.viewmodel.RegisterViewModel
+import udesc.eso.ddm.viewmodel.LoginViewModel
+import udesc.eso.ddm.viewmodel.UserViewModel
+import udesc.eso.ddm.viewmodel.DictionaryViewModel
+import udesc.eso.ddm.viewmodel.WordViewModel
 
 val appModule = module {
     singleOf(::TranslationHttpDAO)
     viewModelOf(::RegisterViewModel)
+    viewModelOf(::LoginViewModel)
+    single {
+        UserRepository(get())
+    }
+    single {
+        DictionaryRepository(get(), get())
+    }
+    single {
+        WordRepository(get(), get())
+    }
+    viewModelOf(::UserViewModel)
+    viewModelOf(::DictionaryViewModel)
+    viewModelOf(::WordViewModel)
 }
 
 val httpModule = module {
     single {
         HttpClient(CIO) {
-            install(ContentNegotiation){
+            install(ContentNegotiation) {
                 json(Json {
                     ignoreUnknownKeys = true
                     isLenient = true
@@ -36,7 +55,7 @@ val httpModule = module {
 
 val firebaseAuthModule = module {
     single {
-         Firebase.auth
+        Firebase.auth
     }
 }
 val firebaseStoreModule = module {

@@ -78,9 +78,6 @@ fun RegisterScreen(uiState: RegisterUiState, onSignUpClick: () -> Unit) {
             PrimaryButton(
                 buttonText = "CRIAR CONTA", handleClick = onSignUpClick
             )
-//            SecondaryButton(
-//                buttonText = "JÁ TENHO UMA CONTA",
-//                handleClick = { navController.navigate(Routes.LOGIN_SCREEN) })
         }
     }
 }

@@ -17,7 +17,10 @@ import udesc.eso.ddm.ui.screens.DictionaryScreen
 import udesc.eso.ddm.ui.screens.HomeScreen
 import udesc.eso.ddm.ui.screens.LoginScreen
 import udesc.eso.ddm.ui.screens.RegisterScreen
+import udesc.eso.ddm.viewmodel.DictionaryViewModel
+import udesc.eso.ddm.viewmodel.LoginViewModel
 import udesc.eso.ddm.viewmodel.RegisterViewModel
+import udesc.eso.ddm.viewmodel.UserViewModel
 
 @ExperimentalMaterial3Api
 @Composable
@@ -42,8 +45,28 @@ fun AppNavigatorController() {
                 }
             })
         }
-        composable(Routes.LOGIN_SCREEN) { LoginScreen(navController = navController) }
-        composable(Routes.APP_HOME) { AppHomeScreen(navController = navController) }
+        composable(Routes.LOGIN_SCREEN) {
+            val viewModel = koinViewModel<LoginViewModel>()
+            val uiState = viewModel.uiState.collectAsState()
+            val scope = rememberCoroutineScope()
+            val signInSuccessful = viewModel.signInSuccessful.collectAsState(initial = false)
+            LaunchedEffect(signInSuccessful.value) {
+                if (signInSuccessful.value) {
+                    navController.navigate(Routes.APP_HOME)
+                }
+            }
+            LoginScreen(uiState = uiState.value, onSignInClick = {
+                scope.launch {
+                    viewModel.signIn()
+                }
+            })
+        }
+        composable(Routes.APP_HOME) {
+            val userViewModel = koinViewModel<UserViewModel>()
+            val uiState = userViewModel.uiState.collectAsState()
+            val dictionaryViewModel = koinViewModel<DictionaryViewModel>()
+            AppHomeScreen(uiState.value, navController = navController, dictionaryViewModel)
+        }
         composable(
             route = "${Routes.DICTIONARY_SCREEN}/{dictionaryId}",
             arguments = listOf(navArgument("dictionaryId") { type = NavType.StringType })
