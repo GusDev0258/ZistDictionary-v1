@@ -48,9 +48,6 @@ fun CreateDictionaryModal(
     val model = viewModel.createDictionaryModel.collectAsState()
     var isFromLanguageExpanded by remember { mutableStateOf(false) }
     var isToLanguageExpanded by remember { mutableStateOf(false) }
-    var isDropdownExpanded by remember {
-        mutableStateOf(false)
-    }
     val availableLanguages = model.value.availableLanguages
     val languages = listOf("Portuguese", "English", "Spanish", "Deutsch")
     var selectedFromLanguage by remember {
