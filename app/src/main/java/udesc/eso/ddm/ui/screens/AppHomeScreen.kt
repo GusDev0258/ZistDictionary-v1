@@ -44,8 +44,8 @@ fun AppHomeScreen(
     navController: NavController,
     dictionaryViewModel: DictionaryViewModel
 ) {
+    dictionaryViewModel.loadDictionaries()
     val dictionaryList = dictionaryViewModel.dictionaries
-    val list = dictionaryList.asLiveData()
     Scaffold(
         topBar = {
             TopAppBar(title = {
@@ -83,7 +83,7 @@ fun AppHomeScreen(
             ) {
                 SectionRow(
                     title = "Dicionários",
-                    itemTitleList = list.value?.map {
+                    itemTitleList = dictionaryList.asLiveData().value?.map {
                         "${it.fromLanguage} - ${it.toLanguage}"
                     },
                     navController = navController,
@@ -100,9 +100,7 @@ fun AppHomeScreen(
                     )
                 }
             }
-
         }
-
     )
 }
 
@@ -116,7 +114,9 @@ fun SectionRow(
     Column(
         verticalArrangement = Arrangement.spacedBy(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(top = 40.dp)
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp),

@@ -68,11 +68,12 @@ fun AppNavigatorController() {
             AppHomeScreen(uiState.value, navController = navController, dictionaryViewModel)
         }
         composable(
-            route = "${Routes.DICTIONARY_SCREEN}/{dictionaryId}",
+            route = "${Routes.DICTIONARY_SCREEN}/{dictionaryId}/{dictionaryName}",
             arguments = listOf(navArgument("dictionaryId") { type = NavType.StringType })
         ) { navBackStackEntry ->
             val dictionaryId = navBackStackEntry.arguments?.getString("dictionaryId")
-            DictionaryScreen(dictionaryId = dictionaryId, navController = navController)
+            val dictionaryName = navBackStackEntry.arguments?.getString("dictionaryName")
+            DictionaryScreen(dictionaryName = dictionaryName, navController = navController)
         }
     }
 }

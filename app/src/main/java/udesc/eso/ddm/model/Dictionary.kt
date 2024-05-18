@@ -5,11 +5,12 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Dictionary(
     val uuid: String = "",
-    val fromLanguage: String,
-    val toLanguage: String,
+    val fromLanguage: String = "",
+    val toLanguage: String = "",
     val words: List<String> = listOf()
 )
 
+@Serializable
 data class CreateDictionaryModel(
     val title: String = "Novo Dicionário",
     val fromLanguage: String = "",

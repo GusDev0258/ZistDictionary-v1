@@ -5,6 +5,5 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
 
 @Composable
-fun DictionaryScreen(dictionaryId: String?, navController: NavController) {
-    Text("Funfou $dictionaryId")
+fun DictionaryScreen(dictionaryName: String?, navController: NavController) {
 }
