@@ -52,6 +52,7 @@ fun CreateDictionaryModal(
         mutableStateOf(false)
     }
     val availableLanguages = model.value.availableLanguages
+    val languages = listOf("Portuguese", "English", "Spanish", "Deutsch")
     var selectedFromLanguage by remember {
         mutableStateOf("")
     }
@@ -90,8 +91,8 @@ fun CreateDictionaryModal(
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    ExposedDropdownMenuBox(expanded = isDropdownExpanded, onExpandedChange = {
-                        isDropdownExpanded = !isDropdownExpanded
+                    ExposedDropdownMenuBox(expanded = isFromLanguageExpanded, onExpandedChange = {
+                        isFromLanguageExpanded = !isFromLanguageExpanded
                     }) {
                         TextField(
                             value = selectedFromLanguage,
@@ -104,7 +105,7 @@ fun CreateDictionaryModal(
                         ExposedDropdownMenu(
                             expanded = isFromLanguageExpanded,
                             onDismissRequest = { isFromLanguageExpanded = false }) {
-                            availableLanguages.forEachIndexed { index, language ->
+                            languages.forEachIndexed { index, language ->
                                 DropdownMenuItem(
                                     text = { Text(text = language) },
                                     onClick = {
@@ -115,6 +116,34 @@ fun CreateDictionaryModal(
                                 )
                             }
                         }
+
+                    }
+                    ExposedDropdownMenuBox(expanded = isToLanguageExpanded, onExpandedChange = {
+                        isToLanguageExpanded = !isToLanguageExpanded
+                    }) {
+                        TextField(
+                            value = selectedToLanguage,
+                            onValueChange = {},
+                            modifier = Modifier.menuAnchor(),
+                            readOnly = true,
+                            trailingIcon = {
+                                ExposedDropdownMenuDefaults.TrailingIcon(expanded = isToLanguageExpanded)
+                            })
+                        ExposedDropdownMenu(
+                            expanded = isToLanguageExpanded,
+                            onDismissRequest = { isToLanguageExpanded = false }) {
+                            languages.forEachIndexed { index, language ->
+                                DropdownMenuItem(
+                                    text = { Text(text = language) },
+                                    onClick = {
+                                        selectedToLanguage = languages[index]
+                                        isToLanguageExpanded = false
+                                    },
+                                    contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+                                )
+                            }
+                        }
+
                     }
                 }
                 Row(
@@ -122,7 +151,13 @@ fun CreateDictionaryModal(
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     Button(
-                        onClick = { viewModel.createDictionary("Portuguese", "English") },
+                        onClick = {
+                            viewModel.createDictionary(
+                                selectedFromLanguage,
+                                selectedToLanguage
+                            )
+                            viewModel.hideCreateDictionaryModal()
+                        },
                     ) {
                         Text("Criar Dicionário")
                     }

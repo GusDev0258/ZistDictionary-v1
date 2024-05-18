@@ -1,7 +1,9 @@
 package udesc.eso.ddm.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -13,6 +15,7 @@ import udesc.eso.ddm.infra.repository.UserRepository
 import udesc.eso.ddm.model.CreateDictionaryModel
 import udesc.eso.ddm.model.Dictionary
 import java.util.UUID
+import kotlin.reflect.KProperty
 
 class DictionaryViewModel(private val dictionaryRepository: DictionaryRepository) : ViewModel() {
     private val _dictionaries = MutableStateFlow<List<Dictionary>>(emptyList())
@@ -21,7 +24,6 @@ class DictionaryViewModel(private val dictionaryRepository: DictionaryRepository
     val createDictionaryModel: StateFlow<CreateDictionaryModel> = _createDictionaryModel
     private val _showCreateDictionaryModal = mutableStateOf<Boolean>(false)
     val showCreateDictionaryModal = _showCreateDictionaryModal
-
     fun showCreateDictionaryModal() {
         _showCreateDictionaryModal.value = true
     }
@@ -30,10 +32,14 @@ class DictionaryViewModel(private val dictionaryRepository: DictionaryRepository
         _showCreateDictionaryModal.value = false
     }
 
-    fun createDictionary(fromLanguage: String, toLanguage: String) {
+    fun createDictionary(selectedFromLanguage: String, selectedToLanguage: String) {
         viewModelScope.launch {
-            val dictionary: Dictionary =
-                Dictionary(uuid = UUID.randomUUID().toString(), fromLanguage, toLanguage)
+            val dictionary =
+                Dictionary(
+                    uuid = UUID.randomUUID().toString(),
+                    selectedFromLanguage,
+                    selectedToLanguage
+                )
             dictionaryRepository.addDictionary(dictionary)
             _createDictionaryModel.value = CreateDictionaryModel()
         }
@@ -53,3 +59,5 @@ class DictionaryViewModel(private val dictionaryRepository: DictionaryRepository
         }
     }
 }
+
+
