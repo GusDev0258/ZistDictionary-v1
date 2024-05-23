@@ -2,6 +2,7 @@ package udesc.eso.ddm.infra.http
 
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.request.accept
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.request.url
@@ -16,6 +17,7 @@ class TranslationHttpDAO(private val httpClient: HttpClient) {
         val response = httpClient.post {
             url(HttpRoutes.TRANSLATE_ROUTE)
             contentType(ContentType.Application.Json)
+            accept(ContentType.Application.Json)
             setBody(translateRequest)
         }
         return response.body()

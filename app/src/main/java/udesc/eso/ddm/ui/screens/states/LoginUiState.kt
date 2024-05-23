@@ -6,5 +6,4 @@ data class LoginUiState(
     val onEmailChange: (String) -> Unit = {},
     val onPasswordChange: (String) -> Unit = {},
     val error: String? = null
-
 )

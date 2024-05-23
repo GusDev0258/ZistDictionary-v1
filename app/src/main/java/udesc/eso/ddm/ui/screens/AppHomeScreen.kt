@@ -1,5 +1,6 @@
 package udesc.eso.ddm.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -19,13 +20,18 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
 import androidx.navigation.NavController
+import udesc.eso.ddm.model.Dictionary
 import udesc.eso.ddm.navigation.Routes
 import udesc.eso.ddm.ui.components.CreateDictionaryModal
 import udesc.eso.ddm.ui.components.CreateNewDictionaryButton
@@ -44,8 +50,11 @@ fun AppHomeScreen(
     navController: NavController,
     dictionaryViewModel: DictionaryViewModel
 ) {
-    dictionaryViewModel.loadDictionaries()
-    val dictionaryList = dictionaryViewModel.dictionaries
+    val dictionaryList by dictionaryViewModel.dictionaries.collectAsState()
+    val showCreateDictionaryModal by dictionaryViewModel.showCreateDictionaryModal.collectAsState()
+    LaunchedEffect(key1 = "dictionaries") {
+        dictionaryViewModel.loadDictionaries()
+    }
     Scaffold(
         topBar = {
             TopAppBar(title = {
@@ -82,20 +91,17 @@ fun AppHomeScreen(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 SectionRow(
-                    title = "Dicionários",
-                    itemTitleList = dictionaryList.asLiveData().value?.map {
-                        "${it.fromLanguage} - ${it.toLanguage}"
-                    },
+                    dictionaryList = dictionaryList,
                     navController = navController,
                     onCreateNewDictionaryClick = {
                         dictionaryViewModel.showCreateDictionaryModal()
                     }
                 )
-                if (dictionaryViewModel.showCreateDictionaryModal.value) {
+                if (showCreateDictionaryModal) {
                     CreateDictionaryModal(
                         viewModel = dictionaryViewModel,
                         onDismiss = {
-                            dictionaryViewModel.hideCreateDictionaryModal() // Fecha o modal
+                            dictionaryViewModel.hideCreateDictionaryModal()
                         },
                     )
                 }
@@ -106,8 +112,7 @@ fun AppHomeScreen(
 
 @Composable
 fun SectionRow(
-    title: String,
-    itemTitleList: List<String>?,
+    dictionaryList: List<Dictionary>,
     navController: NavController,
     onCreateNewDictionaryClick: () -> Unit
 ) {
@@ -126,7 +131,7 @@ fun SectionRow(
                 .padding(16.dp)
         ) {
             Text(
-                title,
+                "Dicionários",
                 fontWeight = FontWeight.Bold,
                 color = Black,
                 fontSize = 20.sp
@@ -147,14 +152,16 @@ fun SectionRow(
                     onClick = onCreateNewDictionaryClick
                 )
             }
-            if (itemTitleList != null) {
-                items(itemTitleList.size) {
-                    NavigationCard(
-                        title = itemTitleList[it],
-                        navigationRoute = "${Routes.DICTIONARY_SCREEN}/${itemTitleList[it]}",
-                        navController = navController
-                    )
-                }
+            items(dictionaryList.size) { index ->
+                val dictionary = dictionaryList[index]
+                Log.d("Dictionary", "Dictionary: ${dictionary}")
+                NavigationCard(
+                    title = dictionary.fromLanguage,
+                    navigationRoute = "${Routes.DICTIONARY_SCREEN}/${
+                        dictionary.uuid
+                    }",
+                    navController = navController
+                )
             }
         }
     }

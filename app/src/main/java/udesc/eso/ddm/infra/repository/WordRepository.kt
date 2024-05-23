@@ -14,8 +14,9 @@ class WordRepository(private val db: FirebaseFirestore, private val dao: Transla
         val translationResponse: TranslationResponse = dao.translateWord(word)
         val word = Word(
             uuid = UUID.randomUUID().toString(),
-            fromLanguage = translationResponse.fromLanguage,
-            toLanguage = translationResponse.toLanguage,
+            word = translationResponse.word,
+            fromLanguage = translationResponse.from,
+            toLanguage = translationResponse.to,
             meaning = translationResponse.meaning,
             translation = translationResponse.translation,
             fromLanguageExampleSentence = translationResponse.fromLanguageExampleSentence,
@@ -43,6 +44,10 @@ class WordRepository(private val db: FirebaseFirestore, private val dao: Transla
         } else {
             null
         }
+    }
+    suspend fun getWordbyId(wordId: String): Word? {
+        val wordRef = db.collection("words").document(wordId).get().await()
+        return wordRef.toObject(Word::class.java)
     }
 
 }

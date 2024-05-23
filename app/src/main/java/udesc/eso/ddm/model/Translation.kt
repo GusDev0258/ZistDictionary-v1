@@ -11,11 +11,11 @@ data class TranslationRequest(
 
 @Serializable
 data class TranslationResponse(
-    val fromLanguage: String,
-    val toLanguage: String,
-    val word: String,
-    val translation: String,
-    val meaning: String,
-    val fromLanguageExampleSentence: String,
-    val toLanguageExampleSentence: String,
+    val word: String = "",
+    val from: String = "",
+    val to: String = "",
+    val translation: String = "",
+    val meaning: String = "",
+    val fromLanguageExampleSentence: String = "",
+    val toLanguageExampleSentence: String = "",
 )

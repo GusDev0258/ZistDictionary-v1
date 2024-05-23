@@ -42,19 +42,23 @@ fun NavigationCard(title: String, navigationRoute: String, navController: NavCon
 
 @Composable
 fun CreateNewDictionaryButton(onClick: () -> Unit) {
-    OutlinedButton(onClick = onClick,
-        colors = ButtonDefaults.buttonColors(contentColor = Black, containerColor = Color.Transparent),
+    OutlinedButton(
+        onClick = onClick,
+        colors = ButtonDefaults.buttonColors(
+            contentColor = Black,
+            containerColor = Color.Transparent
+        ),
         modifier = Modifier
             .height(90.dp)
             .width(90.dp)
             .border(width = 1.dp, shape = RoundedCornerShape(12.dp), color = Black),
         shape = RoundedCornerShape(12.dp)
-        ) {
+    ) {
         Column(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Icon(imageVector = Icons.Outlined.AddCircle, contentDescription = "Add New Card Button" )
+            Icon(imageVector = Icons.Outlined.AddCircle, contentDescription = "Add New Card Button")
             Text("Novo", fontWeight = FontWeight.Bold)
         }
     }
