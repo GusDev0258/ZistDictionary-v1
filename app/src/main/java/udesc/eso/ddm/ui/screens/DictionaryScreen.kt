@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.BottomAppBar
@@ -96,7 +97,7 @@ fun DictionaryScreen(
                 NavBar(navController = navController)
             }
         },
-        content = { it ->
+        content = { padding ->
             if (currentDictionary != null) {
                 Column(
                     modifier = Modifier
@@ -148,17 +149,12 @@ fun DictionaryScreen(
                             dictionaryViewModel.addWordToDictionary(id, word.uuid)
                         }
                     }
-                    Column(
-                        modifier = Modifier
-                            .verticalScroll(
-                                enabled = true, state = ScrollState
-                                    (0)
-                            )
-                            .fillMaxSize(1f)
-                            .padding(20.dp)
+                    LazyColumn(
+                        userScrollEnabled = true,
+                        modifier = Modifier.padding(20.dp).fillMaxSize(1f),
                     ) {
-                        words.forEach { word ->
-                            WordCard(word = word)
+                        items(words.size) { index ->
+                            WordCard(word = words[index])
                         }
                     }
                 }

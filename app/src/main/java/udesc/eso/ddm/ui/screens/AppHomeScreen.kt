@@ -28,8 +28,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.asLiveData
 import androidx.navigation.NavController
 import udesc.eso.ddm.model.Dictionary
 import udesc.eso.ddm.navigation.Routes

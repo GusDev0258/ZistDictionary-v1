@@ -9,7 +9,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation.NavController
-import udesc.eso.ddm.testFun
 import udesc.eso.ddm.ui.components.ImageLogo
 import udesc.eso.ddm.ui.components.ImageText
 import udesc.eso.ddm.ui.components.PrimaryButton
