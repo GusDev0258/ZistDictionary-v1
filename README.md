@@ -24,3 +24,14 @@
 ---
 
 ## Objetos do projeto (Nível requisitos gerados por mim
+
+| Código | Descrição                                                                                                           |
+|--------|---------------------------------------------------------------------------------------------------------------------|
+| RF001  | O sistema deve ser capaz de manter usuário.                                                                         |
+| RF002  | O sistema deve ser capaz de permitir ao usuário adicionar palavras ao seu dicionário pessoal.                       |
+| RF003  | O sistema deve ser capaz de traduzir a palavra inserida pelo usuário no dicionário pessoal automaticamente.         |
+| RF004  | O sistema deve ser capaz de gerar uma frase utilizando a palavra inserida pelo usuário nos dois idiomas.            |
+| RF005  | O sistema deve ser capaz de permitir ao usuário ter dicionários em mais de um idioma.                               |
+| RF006  | O sistema deve ser capaz de permitir ao usuário que selecione o idioma que ele quer o dicionário, e a ordem de tradução, por exemplo PT - EN ou EN - PT. |
+
+
