@@ -10,6 +10,9 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,6 +20,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
@@ -50,10 +56,12 @@ import udesc.eso.ddm.ui.theme.Black
 import udesc.eso.ddm.ui.theme.DeepOrange50
 import udesc.eso.ddm.ui.theme.Green50
 import udesc.eso.ddm.ui.theme.Green60
+import udesc.eso.ddm.ui.theme.Green70
 import udesc.eso.ddm.ui.theme.Grey10
 import udesc.eso.ddm.ui.theme.Grey70
 import udesc.eso.ddm.ui.theme.Orange50
 import udesc.eso.ddm.ui.theme.Orange60
+import udesc.eso.ddm.ui.theme.White
 import java.io.File
 import java.io.FileOutputStream
 
@@ -125,12 +133,19 @@ fun WordDialog(word: Word?, active: MutableState<Boolean>) {
     }
     val launcher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.TakePicturePreview()) { bitmap ->
+            imageUri.value = null
             bitmap?.let {
                 val uri = saveBitmapToUri(context, it)
                 imageUri.value = uri
             }
 
         }
+    val imageActive = remember {
+        mutableStateOf(false)
+    }
+    val showImage = remember {
+        mutableStateOf(false)
+    }
     if (active.value) {
         Dialog(
             onDismissRequest = { active.value = false },
@@ -151,11 +166,15 @@ fun WordDialog(word: Word?, active: MutableState<Boolean>) {
                 border = BorderStroke(2.dp, Green50),
             ) {
                 Column(
-                    modifier = Modifier.padding(20.dp),
+                    modifier = Modifier
+                        .padding(20.dp)
+                        .verticalScroll(enabled = true, state = ScrollState(0)),
                     verticalArrangement = Arrangement.spacedBy(32.dp),
                     horizontalAlignment =
-                    Alignment.Start
-                ) {
+                    Alignment.Start,
+
+
+                    ) {
                     Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
                         Text(
                             text = word?.word ?: "Default Title", fontWeight = FontWeight.Bold, color =
@@ -241,19 +260,48 @@ fun WordDialog(word: Word?, active: MutableState<Boolean>) {
                     Button(onClick = {
                         requestCameraPermission(context) {
                             launcher.launch(null)
+                            imageActive.value = true
                         }
                     }) {
                         Text(text = "Adicionar Foto")
                     }
-                    imageUri.value?.let { uri ->
-                        Dialog(onDismissRequest = {  }) {
-                            Image(
-                                painter = rememberImagePainter(data = uri), contentDescription = "Imagem da " +
-                                        "palavra", modifier = Modifier
-                                    .fillMaxSize(1f)
-                            )
-                        }
 
+                    Button(onClick = {
+                        active.value = !active.value
+                    }) {
+                        Text(text = "Dispensar")
+                    }
+                    imageUri.value?.let { uri ->
+                        if (imageActive.value || showImage.value) {
+                            Dialog(
+                                onDismissRequest = { imageActive.value = !imageActive.value }, properties =
+                                DialogProperties
+                                    (dismissOnClickOutside = true)
+                            ) {
+                                Column(
+                                    modifier = Modifier
+                                        .size(width = 500.dp, height = 600.dp)
+                                        .padding(12.dp)
+                                        .background(color = White)
+                                        .border(
+                                            width = 2.dp, shape = RoundedCornerShape(12.dp), color = Green70
+                                        ),
+                                    verticalArrangement = Arrangement.Center,
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Text(text = "Imagem Capturada")
+                                    Image(
+                                        painter = rememberImagePainter(data = uri), contentDescription = "Imagem da " +
+                                                "palavra", modifier = Modifier
+                                            .size(width = 300.dp, height = 400.dp)
+                                            .padding(8.dp)
+                                    )
+                                    Button(onClick = { imageActive.value = !imageActive.value }) {
+                                        Text(text = "Dispensar")
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
