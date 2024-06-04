@@ -1,13 +1,17 @@
 # Zist Dictionary
 
 <h2>Disclaimer</h2>
+
 <p>
   O aplicativo para android Zist Dictionary foi desenvolvido para se encaixar nos requisitos do trabalho de Dispositivos Móveis da UDESC 2024.1, tendo como Professor da Disciplina Mattheus da Hora.
   Dito isso, neste README, estarei elegendo os objetivos propostos do projeto e também do escopo do trabalho.
 </p>
+
 <p>
   Para o aplicativo rodar, é necessário um google-services.json válido, ter a api para realizar as traduções no ollama, e um docker rodando o modelo phi3:medium com o ollama.
 </p>
+
+<p>Você pode encontrar a api no seguinte link: https://github.com/GusDev0258/ZistDictionary-api-v1</p>
 
 <h2>Sobre</h2>
 <p>
